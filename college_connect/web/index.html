@@ -1,19 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
@@ -40,6 +27,26 @@
   <script src="flutter.js" defer></script>
 </head>
 <body>
+  
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+
+<script>
+      const firebaseConfig = {
+          apiKey: "AIzaSyDn0utYMfbCjXpBPEqzL04sHJeMxlv7DVI",
+          authDomain: "college-connect-1.firebaseapp.com",
+          projectId: "college-connect-1",
+          storageBucket: "college-connect-1.appspot.com",
+          messagingSenderId: "401186886646",
+          appId: "1:401186886646:web:5e02f669bddeb070d0edd7",
+          measurementId: "G-RVRGX9B9L7"
+        };
+
+      firebase.initializeApp(firebaseConfig);
+    </script>
+
   <script>
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
