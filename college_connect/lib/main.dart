@@ -1,4 +1,5 @@
 import 'package:college_connect/Screens/home.dart';
+import 'package:college_connect/screens/login.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
+      home: const LoginScreen(),
     );
   }
 }
