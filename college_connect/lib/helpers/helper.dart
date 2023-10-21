@@ -1,11 +1,10 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_connect/screens/college.dart';
+import 'package:college_connect/screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../Screens/root.dart';
 
 String title = "Menar";
 Map product = {};
@@ -111,13 +110,10 @@ logOut(context) async {
   final prefs = await SharedPreferences.getInstance();
   prefs.clear;
   await FirebaseAuth.instance.signOut();
-  pageIndex = 0;
-  pageController.animateToPage(0,
-      duration: const Duration(milliseconds: 500), curve: Curves.bounceIn);
   Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (context) => const RootScreen(),
+        builder: (context) => const HomeScreen(),
       ),
       (route) => false);
 }
