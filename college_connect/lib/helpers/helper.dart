@@ -1,30 +1,16 @@
 import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:college_connect/screens/college.dart';
-import 'package:college_connect/screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-String title = "Menar";
-Map product = {};
-List cartItems = [];
-
-GeoPoint? deliveryLocation;
+String title = "College Connect";
 
 CollectionReference colleges = FirebaseFirestore.instance.collection('College');
 CollectionReference users = FirebaseFirestore.instance.collection('Users');
 String uid() => FirebaseAuth.instance.currentUser!.uid;
 
-addAll(List x) {
-  double i = 0;
-  for (var e in x) {
-    if (e is int || e is double) {
-      i += e;
-    }
-  }
-  return i;
-}
+Map usersData = {};
 
 String greeting() {
   var hour = DateTime.now().hour;
@@ -65,23 +51,6 @@ getOrientation(context) {
       : false;
 }
 
-const MaterialColor primaryWhite = MaterialColor(
-  _whitePrimaryValue,
-  <int, Color>{
-    50: Color(0xFFFFFFFF),
-    100: Color(0xFFFFFFFF),
-    200: Color(0xFFFFFFFF),
-    300: Color(0xFFFFFFFF),
-    400: Color(0xFFF9F8F8),
-    500: Color(0xFFF9F1FF),
-    600: Color(0xFFFFFFFF),
-    700: Color(0xFFFFFFFF),
-    800: Color(0xFFFFFFFF),
-    900: Color(0xFFFFFFFF),
-  },
-);
-const int _whitePrimaryValue = 0xFFF9F8F8;
-
 const months = [
   "Jan",
   "Feb",
@@ -97,39 +66,13 @@ const months = [
   "Dec"
 ];
 
-double calculateDistance(lat1, lon1, lat2, lon2) {
-  var p = 0.017453292519943295;
-  var c = cos;
-  var a = 0.5 -
-      c((lat2 - lat1) * p) / 2 +
-      c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
-  return 12742 * asin(sqrt(a));
-}
+String generateUid(int min, int max) {
+  const chars =
+      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+  int length = min + Random().nextInt(max - min);
 
-logOut(context) async {
-  final prefs = await SharedPreferences.getInstance();
-  prefs.clear;
-  await FirebaseAuth.instance.signOut();
-  Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const HomeScreen(),
-      ),
-      (route) => false);
-}
-
-alertDialog(body, context, [title]) {
-  return showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-            title: Center(child: Text(title ?? "Oops")),
-            content: Text(body),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text("Ok"))
-            ],
-          ));
+  return String.fromCharCodes(Iterable.generate(
+      length, (_) => chars.codeUnitAt(Random().nextInt(chars.length))));
 }
 
 currencyFormat(String input) {
@@ -149,57 +92,4 @@ currencyFormat(String input) {
   }
   newString += array[1];
   return newString;
-}
-
-totalCalculator({required int price, int? quantity, int? variantPrice}) {
-  return ((quantity ?? 1) * price) + (variantPrice ?? 0);
-}
-
-String generateUid(int min, int max) {
-  const chars =
-      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-  int length = min + Random().nextInt(max - min);
-
-  return String.fromCharCodes(Iterable.generate(
-      length, (_) => chars.codeUnitAt(Random().nextInt(chars.length))));
-}
-
-drawer(context) {
-  return Container(
-    width: 250,
-    color: Colors.white,
-    child: Padding(
-      padding: const EdgeInsets.only(left: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Spacer(),
-          if (FirebaseAuth.instance.currentUser != null)
-            TextButton(
-                onPressed: () async => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const CollegeScreen(),
-                    )),
-                child: Text(
-                  "Admin Portal",
-                  style: TextStyle(color: Colors.blueGrey.shade700),
-                )),
-          const SizedBox(
-            height: 20,
-          ),
-          if (FirebaseAuth.instance.currentUser != null)
-            TextButton(
-                onPressed: () async => await logOut(context),
-                child: Text(
-                  "Logout",
-                  style: TextStyle(color: Colors.blueGrey.shade700),
-                )),
-          const SizedBox(
-            height: 20,
-          )
-        ],
-      ),
-    ),
-  );
 }

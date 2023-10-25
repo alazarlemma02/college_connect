@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:college_connect/screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../Screens/login.dart';
 import '../helpers/helper.dart';
@@ -100,6 +101,9 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       user.sendEmailVerification().then((value) {
                         showSnackBar(context, "New verification link sent");
                       }).catchError((onError) {
+                        if (kDebugMode) {
+                          print(onError);
+                        }
                         showSnackBar(
                             context, "Failed to send new verification link");
                       });
