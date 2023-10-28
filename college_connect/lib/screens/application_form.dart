@@ -78,10 +78,10 @@ class ApplicationFormState extends State<ApplicationForm> {
                           TextFormField(
                             controller: nameController,
                             decoration:
-                                const InputDecoration(labelText: 'First Name'),
+                                const InputDecoration(labelText: 'Full Name'),
                             validator: (value) {
                               if (value!.isEmpty) {
-                                return 'Please enter your first name';
+                                return 'Please enter your full name';
                               }
                               return null;
                             },
@@ -533,8 +533,10 @@ class ApplicationFormState extends State<ApplicationForm> {
             'extracurricular': extracurricularActivitiesController.text.trim(),
           if (essayController.text.isNotEmpty)
             'essay': essayController.text.trim(),
+          if (highSchoolNameController.text.isNotEmpty)
+            'schoolName': highSchoolNameController.text.trim(),
           if (financialInfoController.text.isNotEmpty)
-            'essay': financialInfoController.text.trim(),
+            'financialInformation': financialInfoController.text.trim(),
           if (letterOfRecommendationController.text.isNotEmpty)
             'essay': letterOfRecommendationController.text.trim(),
           if (recommendersContactController.text.isNotEmpty)
@@ -550,7 +552,13 @@ class ApplicationFormState extends State<ApplicationForm> {
           setState(() {
             _isLoading = false;
           });
-          Navigator.pop(context);
+          await users.doc(uid()).collection("cart").get().then((value) async {
+            for (var element in value.docs) {
+              await element.reference.delete();
+            }
+          }).then((value) {
+            Navigator.pop(context);
+          });
         }).catchError((onError) {
           showSnackBar(context, "Upload not full successful");
           Navigator.pop(context);
@@ -599,6 +607,6 @@ class ApplicationFormState extends State<ApplicationForm> {
       return;
     }
     await applications.doc(docId).update({'images': images});
-    showSnackBar(context, "Updated Successfully");
+    showSnackBar(context, "Upload Successfully");
   }
 }

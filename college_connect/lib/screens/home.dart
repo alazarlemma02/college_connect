@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../helpers/helper.dart';
 import 'cart.dart';
 import 'college.dart';
+import 'my_college.dart';
 import 'search.dart';
 import 'widgets/drawer.dart';
 
@@ -37,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.menu,
                 color: Colors.white,
               ));
@@ -46,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: width > 320
             ? Text(
                 title,
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
               )
             : null,
         actions: [
@@ -66,6 +67,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             ));
                       },
                       label: const Text("My Colleges"),
+                    ),
+                  ),
+                if (usersData["type"] == "collegeAdmin")
+                  SizedBox(
+                    height: 40,
+                    child: FloatingActionButton.extended(
+                      heroTag: "myAdmin",
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MyCollegeScreen(),
+                            ));
+                      },
+                      label: const Text("My Admin"),
                     ),
                   ),
                 const SizedBox(
