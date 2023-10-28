@@ -246,21 +246,9 @@ class ApplicationFormState extends State<ApplicationForm> {
                             decoration: const InputDecoration(
                                 labelText:
                                     'Contact information of the recommenders'),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter the name of high school you attended';
-                              }
-                              return null;
-                            },
                             maxLines: 1,
                           ),
-                          const SizedBox(height: 15),
-                          TextFormField(
-                            controller: recommendersContactController,
-                            decoration: const InputDecoration(
-                                labelText: 'Recommendation letter'),
-                            maxLines: 1,
-                          ),
+
                           const SizedBox(height: 15),
                           TextFormField(
                             controller: financialInfoController,
@@ -397,10 +385,28 @@ class ApplicationFormState extends State<ApplicationForm> {
                               backgroundColor: Colors.green.shade300,
                               onPressed: !_isLoading
                                   ? () async {
+                                      setState(() {
+                                        _isLoading = true;
+                                      });
                                       for (Map college in cartItems) {
-                                        await uploadApplication(college["id"]);
+                                        await uploadApplication(college["id"])
+                                            .then((value) async {
+                                          await users
+                                              .doc(uid())
+                                              .collection("cart")
+                                              .get()
+                                              .then((value) async {
+                                            for (var element in value.docs) {
+                                              await element.reference.delete();
+                                            }
+                                          }).then((value) {
+                                            Navigator.pop(context);
+                                          });
+                                        });
                                       }
-                                      // fot
+                                      setState(() {
+                                        _isLoading = false;
+                                      });
                                     }
                                   : null,
                               icon: const Icon(
@@ -493,25 +499,13 @@ class ApplicationFormState extends State<ApplicationForm> {
   }
 
   Future uploadApplication(docId) async {
-    setState(() {
-      _isLoading = true;
-    });
     if (_formKey.currentState!.validate()) {
       if (dateOfBirthController == null) {
         showSnackBar(context, "Please specify date of birth");
-        setState(() {
-          _isLoading = false;
-        });
       } else if (academicImageList.isEmpty) {
         showSnackBar(context, "Please add at least 1 image");
-        setState(() {
-          _isLoading = false;
-        });
       } else if (dateOfGraduationController == null) {
         showSnackBar(context, "Please specify date of graduation");
-        setState(() {
-          _isLoading = false;
-        });
       } else {
         var array = [];
         String c = nameController.text.trim().toLowerCase();
@@ -538,9 +532,8 @@ class ApplicationFormState extends State<ApplicationForm> {
           if (financialInfoController.text.isNotEmpty)
             'financialInformation': financialInfoController.text.trim(),
           if (letterOfRecommendationController.text.isNotEmpty)
-            'essay': letterOfRecommendationController.text.trim(),
-          if (recommendersContactController.text.isNotEmpty)
-            'recommenderContact': recommendersContactController.text.trim(),
+            if (recommendersContactController.text.isNotEmpty)
+              'recommenderContact': recommendersContactController.text.trim(),
           if (dateOfGraduationController != null)
             'graduationDate':
                 dateOfGraduationController!.millisecondsSinceEpoch,
@@ -552,17 +545,8 @@ class ApplicationFormState extends State<ApplicationForm> {
           setState(() {
             _isLoading = false;
           });
-          await users.doc(uid()).collection("cart").get().then((value) async {
-            for (var element in value.docs) {
-              await element.reference.delete();
-            }
-          }).then((value) {
-            Navigator.pop(context);
-          });
         }).catchError((onError) {
           showSnackBar(context, "Upload not full successful");
-          Navigator.pop(context);
-
           setState(() {
             _isLoading = false;
           });
