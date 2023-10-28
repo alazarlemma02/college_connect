@@ -1,3 +1,4 @@
+import 'package:college_connect/helpers/helper.dart';
 import 'package:college_connect/screens/landing.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,8 @@ class MyWidgets {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            if (FirebaseAuth.instance.currentUser != null)
+            if (FirebaseAuth.instance.currentUser != null &&
+                usersData["type"] == "collegeAdmin")
               TextButton(
                   onPressed: () async => Navigator.push(
                       context,

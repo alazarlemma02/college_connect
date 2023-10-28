@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/helper.dart';
 import 'login.dart';
@@ -353,6 +354,10 @@ class SignUpPageState extends State<SignUpPage> {
                                       labelStyle:
                                           TextStyle(fontFamily: 'RobotoLight')),
                                   keyboardType: TextInputType.phone,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp("[0-9]"))
+                                  ],
                                   maxLength: 9,
                                 ),
                                 const SizedBox(

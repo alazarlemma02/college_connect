@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../helpers/helper.dart';
@@ -89,7 +88,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: DropdownButton(
                         value: filterBy,
                         onChanged: (value) {
@@ -190,31 +189,27 @@ class _SearchScreenState extends State<SearchScreen> {
                     }
 
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Column(
-                        children: [
-                          ExpansionTile(
-                            collapsedShape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            backgroundColor: Colors.grey.shade100,
-                            collapsedBackgroundColor: Colors.grey.shade400,
-                            leading: Padding(
-                              padding: const EdgeInsets.all(5),
-                              child: Container(
-                                  // color: Colors.green,
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade200,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(15)),
-                                  )),
-                            ),
-                            expandedAlignment: Alignment.centerLeft,
-                            title: SizedBox(),
-                          )
-                        ],
+                      return ExpansionTile(
+                        collapsedShape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        backgroundColor: Colors.grey.shade100,
+                        collapsedBackgroundColor: Colors.grey.shade400,
+                        leading: Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: Container(
+                              // color: Colors.green,
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(10)),
+                              )),
+                        ),
+                        expandedAlignment: Alignment.centerLeft,
+                        title: const SizedBox(),
                       );
                     }
 
@@ -223,215 +218,218 @@ class _SearchScreenState extends State<SearchScreen> {
                           snapshot.data!.docs.map((DocumentSnapshot document) {
                         Map<String, dynamic> data =
                             document.data()! as Map<String, dynamic>;
-                        return ExpansionTile(
-                          collapsedShape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          backgroundColor: Colors.grey.shade400,
-                          collapsedBackgroundColor: Colors.grey.shade400,
-                          title: Text("${data['name'] ?? 'unknown'}"),
-                          leading: Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: SizedBox(
-                              // color: Colors.green,
-                              width: 50,
-                              height: 50,
-                              child: ClipRRect(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(15)),
-                                  child: FittedBox(
-                                      fit: BoxFit.cover,
-                                      child: Image.network(data["images"][0],
-                                          fit: BoxFit.cover))),
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 15),
+                          child: ExpansionTile(
+                            collapsedShape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            backgroundColor: Colors.grey.shade400,
+                            collapsedBackgroundColor: Colors.grey.shade400,
+                            title: Text("${data['name'] ?? 'unknown'}"),
+                            leading: Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: SizedBox(
+                                // color: Colors.green,
+                                width: 50,
+                                height: 50,
+                                child: ClipRRect(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    child: FittedBox(
+                                        fit: BoxFit.cover,
+                                        child: Image.network(data["images"][0],
+                                            fit: BoxFit.cover))),
+                              ),
                             ),
-                          ),
-                          expandedAlignment: Alignment.centerLeft,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5),
-                                    child: Text(
-                                      '${data['description']}',
-                                      style: const TextStyle(
-                                        fontSize: 17,
-                                        fontFamily: 'semiBold',
-                                      ),
+                            expandedAlignment: Alignment.centerLeft,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 15),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(
+                                      height: 10,
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5),
-                                    child: Text(
-                                      'Acceptance rate ${data['acceptanceRate'] ?? 'unknown'}',
-                                      maxLines: 1,
-                                      style: const TextStyle(
-                                        fontSize: 17,
-                                        fontFamily: 'semiBold',
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5),
-                                    child: Text(
-                                      'Deadline ${data['deadline'] != null ? "${DateTime.fromMillisecondsSinceEpoch(data['deadline']).day} - ${DateTime.fromMillisecondsSinceEpoch(data['deadline']).month} - ${DateTime.fromMillisecondsSinceEpoch(data['deadline']).year}" : 'unknown'}',
-                                      maxLines: 1,
-                                      style: const TextStyle(
-                                        fontSize: 17,
-                                        fontFamily: 'semiBold',
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5),
-                                    child: Row(
-                                      children: [
-                                        const Text(
-                                          'Website link',
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                            fontSize: 17,
-                                            fontFamily: 'semiBold',
-                                          ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5),
+                                      child: Text(
+                                        '${data['description']}',
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          fontFamily: 'semiBold',
                                         ),
-                                        TextButton(
-                                          onPressed: () async {
-                                            if (data['websiteLink'] != null) {
-                                              await launchUrl(Uri.parse(
-                                                  "https://${data['websiteLink']}"));
-                                            }
-                                          },
-                                          child: Text(
-                                            '${data['websiteLink'] ?? 'unknown'}',
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5),
+                                      child: Text(
+                                        'Acceptance rate ${data['acceptanceRate'] ?? 'unknown'}',
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          fontFamily: 'semiBold',
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5),
+                                      child: Text(
+                                        'Deadline ${data['deadline'] != null ? "${DateTime.fromMillisecondsSinceEpoch(data['deadline']).day} - ${DateTime.fromMillisecondsSinceEpoch(data['deadline']).month} - ${DateTime.fromMillisecondsSinceEpoch(data['deadline']).year}" : 'unknown'}',
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          fontFamily: 'semiBold',
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5),
+                                      child: Row(
+                                        children: [
+                                          const Text(
+                                            'Website link',
                                             maxLines: 1,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               fontSize: 17,
                                               fontFamily: 'semiBold',
                                             ),
                                           ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              if (data['websiteLink'] != null) {
+                                                await launchUrl(Uri.parse(
+                                                    "https://${data['websiteLink']}"));
+                                              }
+                                            },
+                                            child: Text(
+                                              '${data['websiteLink'] ?? 'unknown'}',
+                                              maxLines: 1,
+                                              style: const TextStyle(
+                                                fontSize: 17,
+                                                fontFamily: 'semiBold',
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5),
+                                      child: Text(
+                                        'Address - ${data['address'] ?? 'unknown'}',
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          fontFamily: 'semiBold',
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5),
-                                    child: Text(
-                                      'Address - ${data['address'] ?? 'unknown'}',
-                                      maxLines: 1,
-                                      style: const TextStyle(
-                                        fontSize: 17,
-                                        fontFamily: 'semiBold',
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5),
-                                    child: Text(
-                                      'Phone number - ${data['phoneNumber'] ?? 'unknown'}',
-                                      maxLines: 1,
-                                      style: const TextStyle(
-                                        fontSize: 17,
-                                        fontFamily: 'semiBold',
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5),
+                                      child: Text(
+                                        'Phone number - ${data['phoneNumber'] ?? 'unknown'}',
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          fontFamily: 'semiBold',
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5),
-                                    child: Text(
-                                      'Email - ${data['email'] ?? 'unknown'}',
-                                      maxLines: 1,
-                                      style: const TextStyle(
-                                        fontSize: 17,
-                                        fontFamily: 'semiBold',
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5),
+                                      child: Text(
+                                        'Email - ${data['email'] ?? 'unknown'}',
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          fontFamily: 'semiBold',
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5),
-                                    child: Text(
-                                      'Application fee - ${data['applicationFee'] ?? 'unknown'} Br',
-                                      maxLines: 1,
-                                      style: const TextStyle(
-                                        fontSize: 17,
-                                        fontFamily: 'semiBold',
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5),
+                                      child: Text(
+                                        'Application fee - ${data['applicationFee'] ?? 'unknown'} Br',
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          fontFamily: 'semiBold',
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            StatefulBuilder(builder: (context, setState) {
-                              return FloatingActionButton.extended(
-                                  heroTag: "addToCart",
-                                  onPressed: () async {
-                                    if (!_isLoading) {
-                                      setState(() {
-                                        _isLoading = true;
-                                      });
-                                      if (FirebaseAuth.instance.currentUser !=
-                                          null) {
-                                        await users
-                                            .doc(uid())
-                                            .collection("cart")
-                                            .add({
-                                          "id": document.id,
-                                        }).then((value) {
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              StatefulBuilder(builder: (context, setState) {
+                                return FloatingActionButton.extended(
+                                    heroTag: "addToCart",
+                                    onPressed: () async {
+                                      if (!_isLoading) {
+                                        setState(() {
+                                          _isLoading = true;
+                                        });
+                                        if (FirebaseAuth.instance.currentUser !=
+                                            null) {
+                                          await users
+                                              .doc(uid())
+                                              .collection("cart")
+                                              .add({
+                                            "id": document.id,
+                                          }).then((value) {
+                                            cartItems.add({
+                                              "id": document.id,
+                                              "cid": value.id,
+                                            });
+                                            showSnackBar(context,
+                                                "College added to cart.");
+                                          }).catchError((e) {
+                                            showSnackBar(context,
+                                                "Failed to add product to your cart.");
+                                          });
+                                        } else {
                                           cartItems.add({
                                             "id": document.id,
-                                            "cid": value.id,
+                                            "cid": generateUid(5, 36),
                                           });
-                                          showSnackBar(context,
-                                              "College added to cart.");
-                                        }).catchError((e) {
-                                          showSnackBar(context,
-                                              "Failed to add product to your cart.");
-                                        });
-                                      } else {
-                                        cartItems.add({
-                                          "id": document.id,
-                                          "cid": generateUid(5, 36),
-                                        });
-                                        showSnackBar(
-                                            context, "College added to cart");
-                                      }
+                                          showSnackBar(
+                                              context, "College added to cart");
+                                        }
 
-                                      setState(() {
-                                        _isLoading = false;
-                                      });
-                                    }
-                                  },
-                                  label: const Text("Add to my college"));
-                            }),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                          ],
+                                        setState(() {
+                                          _isLoading = false;
+                                        });
+                                      }
+                                    },
+                                    label: const Text("Add to my college"));
+                              }),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          ),
                         );
                       }).toList(),
                     );

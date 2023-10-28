@@ -546,7 +546,7 @@ class _CollegeScreenState extends State<CollegeScreen> {
       }
     }
     if (images.isEmpty) {
-      showSnackBar(context, "Image fialed to upload");
+      showSnackBar(context, "Image failed to upload");
       return;
     }
     await colleges.doc(docId).update({'images': images});

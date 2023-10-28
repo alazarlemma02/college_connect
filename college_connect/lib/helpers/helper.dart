@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 String title = "College Connect";
 
 CollectionReference colleges = FirebaseFirestore.instance.collection('College');
+CollectionReference applications =
+    FirebaseFirestore.instance.collection('Applications');
 CollectionReference users = FirebaseFirestore.instance.collection('Users');
 String uid() => FirebaseAuth.instance.currentUser!.uid;
 
